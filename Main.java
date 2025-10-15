@@ -33,12 +33,24 @@ class Item {
 class Monster {
     String name;
     int strength;
+    int health;
     String description;
-
-    public void attack(Player player) {
+ public void attack(Player player) {
         // Reduce player’s health based on monster’s strength
     }
 }
+class skeleton extends Monster {
+    public skeleton() {
+        this.name = "Skeleton";
+        this.strength = 5;
+        this.health = 40;
+        this.description = "A spooky skeleton warrior.";
+    }
+    @Override 
+    public void attack(Player player) {
+        player.health -= this.strength;
+        System.out.println(this.name + " attacks! Player health is now: " + player.health);
+    }
 
 class Player {
     int health = 100;
