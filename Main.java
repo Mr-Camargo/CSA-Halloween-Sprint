@@ -27,8 +27,13 @@ class Item {
 
     public void use(Player player, Monster monster) {
         // Define what the item does
+        if (effect.equals("heal")) {
+            player.health += 20; // example effect
+        } else if (effect.equals("damage")) {
+            monster.health -= 10; // damage effect on monster
+            }
+        }
     }
-}
 
 class Monster {
     String name;
