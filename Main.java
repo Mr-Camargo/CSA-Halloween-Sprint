@@ -1,3 +1,5 @@
+import java.util.Random;
+
 class Room {
     String name;
     String description;
@@ -89,7 +91,14 @@ player.health = player.health - (rampedStrength + this.strength);
     }
 }
 }
-
+class Vampire extends Monster {
+    Random rand = new Random();
+    public Vampire() {
+        this.name = "Vampire";
+        this.strength = 40;
+        this.health = 120;
+        this.description = "A fast and deadly vampire.";
+    }
 
 
 
