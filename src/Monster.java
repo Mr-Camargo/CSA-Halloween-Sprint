@@ -8,7 +8,7 @@ class Monster {
         // Reduce player’s health based on monster’s strength
       }
     }
-}
+
 class skeleton extends Monster {
     public skeleton() {
         this.name = "Skeleton";
@@ -37,7 +37,7 @@ class skeleton extends Monster {
     public slime() {
         this.name = "Slime";
         this.strength = 5;
-        this.health = 30;
+        this.health = 40;
         this.description = "A small, gelatinous blob.";
     }
     @Override 
@@ -60,3 +60,49 @@ class Vampire extends Monster {
         this.health = 120;
         this.description = "A fast and deadly vampire.";
     }
+    @Override 
+    public void attack(Player player) {
+        int chance = rand.nextInt(100);
+        if (chance < 30) { // 30% chance to double damage
+            System.out.println(this.name + " swoops in and drains your life force! You feel weaker! Your health is now: " + (player.health -= this.strength * 2));
+            player.health -= this.strength * 2;
+        } else {
+            player.health -= this.strength;
+            System.out.println(this.name + " bites you! Your health is now: " + player.health);
+            
+        }
+    }
+    //bat summon
+int numbBats = rand.nextInt(3) + 2; // Summon 2 to 5 bats
+System.out.println(this.name + " summons " + numbBats + " bats to attack you!");
+for (int i = 0; i < numbBats; i++) {            
+ Bat bat = new Bat();
+        }
+
+if (bats .is empty()) { 
+    int chance = rand.nextInt(100);
+    if (chance < 30) { // 30% chance to summon more bats
+        int moreBats = rand.nextInt(3) + 1; // Summon 1 to 3 more bats
+        System.out.println(this.name + " summons " + moreBats + " more bats to attack you!");
+        for (int i = 0; i < moreBats; i++) {
+            Bat bat = new Bat();
+            bats.add(bat);
+        }
+    }
+}
+
+}
+
+class Bat extends Monster {
+    public Bat() {
+        this.name = "Bat";
+        this.strength = 2;
+        this.health = 1;
+        this.description = "A small, flying bat, Does minimal damage but attacks can add up.";
+    }
+    @Override 
+    public void attack(Player player) {
+        player.health -= this.strength;
+        System.out.println(this.name + " swoops in and scratches you! Your health is now: " + player.health);
+    }
+}
