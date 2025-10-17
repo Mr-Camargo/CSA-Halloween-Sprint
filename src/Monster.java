@@ -110,7 +110,62 @@ class Bat extends Monster {
     }
     @Override 
     public void attack(Player player) {
+        if (rand .nextInt(100) < 30) { // 30% chance to miss
+            System.out.println(this.name + "swoops at you but misses!");
+        } else {
         player.health -= this.strength;
         System.out.println(this.name + " swoops in and scratches you! Your health is now: " + player.health);
     }
+}
+
+class Ghost extends Monster { //The ghost has an ability to phase in and out of attacks
+    Random rand = new Random();
+    public Ghost() {
+        this.name = "Ghost";
+        this.strength = 10;
+        this.health = 30;
+        this.description = "A spooky ghost that can phase through attacks.";
+    }
+
+    @Override
+    public void attack(Player player) {
+        if (isDefending) {
+            System.out.println (this.name + " phases through your attacks! They ghost is immune to your attacks while phased");
+            isDefending = false;
+        } else {
+            System.out.println( this.name + "unphases and prepares to attack!");
+            player.takeDamage(this.strength);
+            isDefending = true;
+        }
+    }
+
+ @Override // 99% chance to miss but if it hits it leaves the player at 1 health
+    public void attack(Player player) {
+        if (rand .nextInt(100) < 99) { // 99% chance to miss
+         
+        } else {
+        player.health = 1; // leave player at 1 health
+        System.out.println(this.name + "uses all its spectural powers " + player.health);
+        this.health = 0; // Ghost dies after using its ultimate attack
+    }
+
+    @Override // 99% chance to miss but if it hits it instakills the player
+    public void attack(Player player) {
+        if (rand .nextInt(100) < 99) { // 99% chance to miss
+         
+        } else {
+        player.health = 0; // Instakill
+        System.out.println(this.name + "uses all its spectural powers " + player.health);
+        this.health = 0; // Ghost dies after using its ultimate attack
+    }
+
+    @Override 
+    public void attack(Player player) {
+        if (rand .nextInt(100) < 25) { // 25% chance to miss
+            System.out.println(this.name + " phases through you and misses!");
+        } else {
+        player.health -= this.strength;
+        System.out.println(this.name + " Curses you! Your health is now: " + player.health);
+    }
+}
 }
