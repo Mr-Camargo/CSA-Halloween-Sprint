@@ -96,8 +96,8 @@ class Skeleton extends Monster {
 class Zombie extends Monster {
     public Zombie() {
         this.name = "Zombie";
-        this.strength = 10;
-        this.health = 100;
+        this.strength = 5;
+        this.health = 110;
         this.description = "A slow and weak but relentless zombie.";
     }
 
@@ -144,7 +144,7 @@ class Vampire extends Monster {
     public Vampire() {
         this.name = "Vampire";
         this.strength = 40;
-        this.health = 120;
+        this.health = 110;
         this.description = "A fast and deadly vampire with life-draining abilities.";
     }
 
