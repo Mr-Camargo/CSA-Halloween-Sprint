@@ -12,24 +12,32 @@ class Monster {
 class skeleton extends Monster {
     public skeleton() {
         this.name = "Skeleton";
-        this.strength = 5;
+        this.strength = 15;
         this.health = 40;
-        this.description = "A spooky skeleton warrior.";
+        this.description = "A spooky skeletal warrior.";
     }
     @Override 
     public void attack(Player player) {
-        player.health -= this.strength;
+        if (rand .nextInt(100) < 20) { // 20% chance to miss
+            System.out.println(this.name + " swings at you but misses!");
+        } else {
+          player.health -= this.strength;
         System.out.println(this.name + " uses his spine and whips you! Your health is now: " + player.health);
+        }
+        
     }
     class zombie extends Monster {
     public zombie() {
         this.name = "Zombie";
         this.strength = 10;
         this.health = 100;
-        this.description = "A slow and week but relentless zombie.";
+        this.description = "A slow and weak but relentless zombie.";
     }
     @Override 
     public void attack(Player player) {
+        if (rand .nextInt(100) < 20) { // 20% chance to miss
+            System.out.println(this.name + " lunges at you but misses!");
+        } else {
         player.health -= this.strength;
         System.out.println(this.name + " bites and thrashes at you! Your health is now: " + player.health);
     }  
@@ -40,8 +48,8 @@ class skeleton extends Monster {
         this.health = 40;
         this.description = "A small, gelatinous blob.";
     }
-    @Override 
-    public void attack(Player player) {
+    @Override //Im not gonna give the slime a miss chance it has its unique ability already
+    public void attack(Player player) {s
         attackCount++;
         int rampedStrength = this.strength * attackCount;
         System.out.println("The slime spits acid at you! The slime's acid burns stronger with each attack!" + (player.health -= rampedStrength));
