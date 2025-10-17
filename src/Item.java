@@ -1,113 +1,84 @@
-class Item {
+import java.util.ArrayList;
 
+/**
+ * Item class represents objects that players can pick up and use.
+ * As specified in README.md, items have name, description, and effect.
+ */
+class Item {
     String name;
     String description;
-    String effect; // "heal" or "strength"
-    int power;     // amount of heal or strength change
-    int duration;  // number of turns the effect lasts
+    String effect;
 
-    // Track active temporary effects per Player
-    private static final java.util.IdentityHashMap<Player, java.util.List<StatusEffect>> activeEffects =
-            new java.util.IdentityHashMap<>();
-
-    Player player = new Player();
-
-    public Item(String name, String description, String effect, int power, int duration) {
+    /**
+     * Constructor to create an item.
+     * @param name The name of the item
+     * @param description The description of the item
+     * @param effect The effect the item has ("heal", "strength", "damage", etc.)
+     */
+    public Item(String name, String description, String effect) {
         this.name = name;
         this.description = description;
         this.effect = effect;
-        this.power = power;
-        this.duration = duration;
     }
 
-    // Use the item on player.
-    // once per game turn to decrement durations and automatically revert expired effects.
+    /**
+     * Use the item on a player or monster.
+     * @param player The player using the item
+     * @param monster The monster being targeted (can be null)
+     */
     public void use(Player player, Monster monster) {
-        if (effect == null) {
-            System.out.println("This item does nothing.");
+        if (effect == null || effect.isEmpty()) {
+            System.out.println("This item has no effect.");
             return;
         }
 
-        switch (effect) {
+        switch (effect.toLowerCase()) {
             case "heal":
-                player.health += power;
-                if (player.health > 100) {
-                    player.health = 100; // Health cap
-                }
+                int healAmount = 15;
                 if (player.health >= 86) {
-                    System.out.println("Healing won't be as effective at high health.");
+                    System.out.println("⚠️ Healing won't be as effective at high health!");
                 }
-                System.out.println(name + " used: healed " + power + " HP. Current health: " + player.health);
+                player.health += healAmount;
+                if (player.health > 100) {
+                    player.health = 100; // Cap health at 100
+                }
+                System.out.println("✨ You used " + name + " and healed " + healAmount + " HP! Current health: " + player.health);
                 break;
 
             case "strength":
-                // Apply immediate strength buff and register a temporary effect to revert later
-                player.strength += power;
-                addStatusEffect(player, new StatusEffect("strength", power, duration));
-                System.out.println(name + " used: strength +" + power + " for " + duration + " turns. Current strength: " + player.strength);
+                int strengthBoost = 10;
+                player.strength += strengthBoost;
+                System.out.println("💪 You used " + name + " and gained " + strengthBoost + " strength! Current strength: " + player.strength);
+                break;
+
+            case "damage":
+                if (monster != null && monster.isAlive()) {
+                    int damageAmount = 20;
+                    System.out.println("💥 You used " + name + " on the " + monster.name + "!");
+                    monster.takeDamage(damageAmount);
+                } else {
+                    System.out.println("There's no monster to use this on!");
+                }
+                break;
+
+            case "poison":
+                if (monster != null && monster.isAlive()) {
+                    int poisonDamage = 30;
+                    System.out.println("☠️ You used " + name + " - the " + monster.name + " is poisoned!");
+                    monster.takeDamage(poisonDamage);
+                } else {
+                    System.out.println("There's no monster to use this on!");
+                }
                 break;
 
             default:
-                System.out.println("Item has no recognizable effect: " + effect);
+                System.out.println("❓ You used " + name + " but nothing happened.");
                 break;
-        }
-    }
-
-    // Call once per game turn to process active temporary effects.
-    public static void tickAllEffects() {
-        java.util.Iterator<java.util.Map.Entry<Player, java.util.List<StatusEffect>>> mapIt =
-                activeEffects.entrySet().iterator();
-
-        while (mapIt.hasNext()) {
-            java.util.Map.Entry<Player, java.util.List<StatusEffect>> entry = mapIt.next();
-            Player player = entry.getKey();
-            java.util.List<StatusEffect> list = entry.getValue();
-
-            java.util.Iterator<StatusEffect> it = list.iterator();
-            while (it.hasNext()) {
-                StatusEffect se = it.next();
-                se.remainingTurns--;
-                if (se.remainingTurns <= 0) {
-                    // revert effect
-                    if ("strength".equals(se.type)) {
-                        player.strength -= se.amount;
-                        if (player.strength < 0) player.strength = 0;
-                        System.out.println("Strength buff expired for player. -" + se.amount + " strength. Current: " + player.strength);
-                    }
-                    // remove expired effect
-                    it.remove();
-                }
-            }
-
-            if (list.isEmpty()) {
-                mapIt.remove();
-            }
-        }
-    }
-
-    private static void addStatusEffect(Player player, StatusEffect se) {
-        java.util.List<StatusEffect> list = activeEffects.get(player);
-        if (list == null) {
-            list = new java.util.ArrayList<>();
-            activeEffects.put(player, list);
-        }
-        list.add(se);
-    }
-
-    private static class StatusEffect {
-        String type;
-        int amount;
-        int remainingTurns;
-
-        StatusEffect(String type, int amount, int remainingTurns) {
-            this.type = type;
-            this.amount = amount;
-            this.remainingTurns = remainingTurns;
         }
     }
 
     @Override
     public String toString() {
-        return name + ": " + description + " (effect=" + effect + ", power=" + power + ", duration=" + duration + ")";
+        return name + " (" + effect + ")";
     }
 }

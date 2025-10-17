@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 /**
  * Room class represents a location in the haunted house.
- * Each room has a name, description, items, and exits to other rooms.
+ * Each room has a name, description, items, exits to other rooms, and may contain monsters.
  */
 class Room {
     // Properties as specified in README.md
@@ -10,6 +10,7 @@ class Room {
     String description;
     ArrayList<Item> items = new ArrayList<>();
     ArrayList<Room> exits = new ArrayList<>();
+    ArrayList<Monster> monsters = new ArrayList<>(); // Monsters in this room
     
     /**
      * Constructor to create a room with a name and description.
@@ -38,15 +39,35 @@ class Room {
     }
     
     /**
+     * Adds a monster to this room.
+     * @param monster The monster to add to the room
+     */
+    public void addMonster(Monster monster) {
+        monsters.add(monster);
+    }
+    
+    /**
      * Displays information about the room when entering.
-     * Shows the room name, description, items present, and available exits.
+     * Shows the room name, description, items present, monsters present, and available exits.
      */
     public void enterRoom() {
+        System.out.println("\n========================================");
         System.out.println("You are in " + name);
         System.out.println(description);
+        System.out.println("========================================");
+        
+        // Display monsters in the room
+        if (!monsters.isEmpty()) {
+            System.out.println("\n⚠️ MONSTERS PRESENT:");
+            for (Monster monster : monsters) {
+                if (monster.isAlive()) {
+                    System.out.println("  - " + monster.name + " (Health: " + monster.health + ")");
+                }
+            }
+        }
         
         // Display items in the room
-        System.out.print("Items in the room: ");
+        System.out.print("\n📦 Items in the room: ");
         if (items.isEmpty()) {
             System.out.println("None");
         } else {
@@ -58,7 +79,7 @@ class Room {
         }
         
         // Display exits
-        System.out.print("Exits: ");
+        System.out.print("\n🚪 Exits: ");
         if (exits.isEmpty()) {
             System.out.println("None");
         } else {
@@ -68,6 +89,7 @@ class Room {
             }
             System.out.println(String.join(", ", exitNames));
         }
+        System.out.println("========================================\n");
     }
     
     /**
@@ -105,5 +127,40 @@ class Room {
             }
         }
         return null;
+    }
+    
+    /**
+     * Gets all living monsters in this room.
+     * @return ArrayList of living monsters
+     */
+    public ArrayList<Monster> getLivingMonsters() {
+        ArrayList<Monster> living = new ArrayList<>();
+        for (Monster monster : monsters) {
+            if (monster.isAlive()) {
+                living.add(monster);
+            }
+        }
+        return living;
+    }
+    
+    /**
+     * Checks if there are any living monsters in the room.
+     * @return true if there are living monsters, false otherwise
+     */
+    public boolean hasLivingMonsters() {
+        for (Monster monster : monsters) {
+            if (monster.isAlive()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Removes a dead monster from the room.
+     * @param monster The monster to remove
+     */
+    public void removeMonster(Monster monster) {
+        monsters.remove(monster);
     }
 }

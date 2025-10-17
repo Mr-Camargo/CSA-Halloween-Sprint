@@ -1,0 +1,233 @@
+═══════════════════════════════════════════════════════════════════════
+    🎃 HAUNTED HOUSE ADVENTURE - GAME ARCHITECTURE 👻
+═══════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────┐
+│                         MAIN.JAVA (GAME ENGINE)                     │
+│                                                                     │
+│  ┌──────────────────────────────────────────────────────────────┐ │
+│  │  main() → Welcome → Create World → Game Loop                 │ │
+│  └──────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+│  Game Loop:                                                         │
+│  ┌──────────────────────────────────────────────────────────────┐ │
+│  │  1. Display current room                                      │ │
+│  │  2. Check for win condition                                   │ │
+│  │  3. Handle combat (if monsters present)                       │ │
+│  │  4. Show action menu                                          │ │
+│  │  5. Process player choice                                     │ │
+│  │  6. Repeat until win/lose/quit                                │ │
+│  └──────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
+                                  │
+                    ┌─────────────┼─────────────┐
+                    ▼             ▼             ▼
+         ┌──────────────┐  ┌──────────┐  ┌──────────────┐
+         │   PLAYER     │  │   ROOM   │  │   MONSTER    │
+         └──────────────┘  └──────────┘  └──────────────┘
+                │                │                │
+                │                │                │
+         ┌──────▼──────┐  ┌──────▼──────┐ ┌──────▼──────┐
+         │    ITEM     │  │    ITEM     │ │  Skeleton   │
+         │  (ArrayList)│  │  (ArrayList)│ │    Zombie   │
+         └─────────────┘  └─────────────┘ │    Slime    │
+                                          │    Ghost    │
+                                          │   Vampire   │
+                                          │     Bat     │
+                                          └─────────────┘
+
+═══════════════════════════════════════════════════════════════════════
+                        CLASS RELATIONSHIPS
+═══════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ Player                                                              │
+│ ├─ health: int (100)                                               │
+│ ├─ strength: int (10)                                              │
+│ ├─ inventory: ArrayList<Item>                                      │
+│ ├─ currentRoom: Room                                               │
+│ └─ Methods:                                                         │
+│    ├─ pickUpItem(Item)                                             │
+│    ├─ move(Room)                                                    │
+│    ├─ useItem(String, Monster)                                     │
+│    ├─ attackMonster(Monster)                                       │
+│    ├─ showInventory()                                              │
+│    ├─ showStatus()                                                 │
+│    └─ isAlive()                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ Room                                                                │
+│ ├─ name: String                                                     │
+│ ├─ description: String                                              │
+│ ├─ items: ArrayList<Item>                                          │
+│ ├─ exits: ArrayList<Room>                                          │
+│ ├─ monsters: ArrayList<Monster>                                    │
+│ └─ Methods:                                                         │
+│    ├─ addExit(Room)                                                │
+│    ├─ addItem(Item)                                                │
+│    ├─ addMonster(Monster)                                          │
+│    ├─ enterRoom()                                                  │
+│    ├─ removeItem(Item)                                             │
+│    ├─ removeMonster(Monster)                                       │
+│    ├─ getItem(String)                                              │
+│    ├─ getExit(String)                                              │
+│    ├─ getLivingMonsters()                                          │
+│    └─ hasLivingMonsters()                                          │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ Item                                                                │
+│ ├─ name: String                                                     │
+│ ├─ description: String                                              │
+│ ├─ effect: String (heal/strength/damage/poison)                    │
+│ └─ Methods:                                                         │
+│    ├─ use(Player, Monster)                                         │
+│    └─ toString()                                                    │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ Monster (BASE CLASS)                                                │
+│ ├─ name: String                                                     │
+│ ├─ strength: int                                                    │
+│ ├─ health: int                                                      │
+│ ├─ description: String                                              │
+│ ├─ rand: Random                                                     │
+│ └─ Methods:                                                         │
+│    ├─ describe()                                                    │
+│    ├─ attack(Player)                                               │
+│    ├─ isAlive()                                                     │
+│    └─ takeDamage(int)                                              │
+│                                                                     │
+│ ┌─ SUBCLASSES ────────────────────────────────────────────────┐   │
+│ │ ├─ Skeleton (40 HP, 15 STR, 20% miss)                       │   │
+│ │ ├─ Zombie (100 HP, 10 STR, 20% miss)                        │   │
+│ │ ├─ Slime (40 HP, 5 STR, ramping damage)                     │   │
+│ │ ├─ Ghost (30 HP, 10 STR, phasing)                           │   │
+│ │ ├─ Vampire (120 HP, 40 STR, life drain + bat summon)        │   │
+│ │ └─ Bat (1 HP, 2 STR, 30% miss)                              │   │
+│ └─────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════
+                          GAME WORLD MAP
+═══════════════════════════════════════════════════════════════════════
+
+                    ┌──────────────────┐
+                    │   EXIT DOOR      │ ◄─── WIN CONDITION!
+                    │   (Victory!)     │
+                    └────────▲─────────┘
+                             │
+                    ┌────────┴─────────┐
+                    │   DUSTY ATTIC    │
+                    │  👾 Vampire      │
+                    │  🎒 Health Pot   │
+                    │  🎒 Holy Water   │
+                    └───────┬──┬───────┘
+                            │  │
+              ┌─────────────┘  └─────────────┐
+              │                              │
+     ┌────────▼─────────┐          ┌────────▼─────────┐
+     │ HAUNTED BEDROOM  │          │ CREEPY BASEMENT  │
+     │  👾 Ghost        │          │  👾 Slime        │
+     │  🎒 Magic Amulet │          │  👾 Skeleton     │
+     └────────┬─────────┘          │  🎒 Poison Vial  │
+              │                    └────────┬─────────┘
+              │                             │
+     ┌────────▼─────────┐          ┌────────▼─────────┐
+     │  DARK LIBRARY    │          │ ABANDONED KITCHEN│
+     │  👾 Skeleton     │          │  👾 Zombie       │
+     │  🎒 Ancient Scroll│         │  🎒 Health Pot   │
+     └────────┬─────────┘          └────────┬─────────┘
+              │                             │
+              └─────────────┬───────────────┘
+                            │
+                    ┌───────▼──────────┐
+                    │  ENTRANCE HALL   │ ◄─── START HERE!
+                    │  (Safe - No      │
+                    │   Monsters)      │
+                    │  🎒 Rusty Sword  │
+                    │  🎒 Health Pot   │
+                    └──────────────────┘
+
+═══════════════════════════════════════════════════════════════════════
+                        GAME FLOW DIAGRAM
+═══════════════════════════════════════════════════════════════════════
+
+START
+  │
+  ▼
+┌─────────────┐
+│   Welcome   │
+│   Screen    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│   Create    │
+│   World     │
+│  (7 Rooms,  │
+│ Items, Mobs)│
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐◄──────────────────┐
+│  Enter/     │                   │
+│  Display    │                   │
+│  Room       │                   │
+└──────┬──────┘                   │
+       │                          │
+       ▼                          │
+┌─────────────┐                   │
+│  Check Win  │──YES──► VICTORY! ─┘
+└──────┬──────┘
+       │NO
+       ▼
+┌─────────────┐
+│  Monsters?  │──YES──► ┌──────────────┐
+└──────┬──────┘         │ COMBAT LOOP  │
+       │NO              │  ┌─────────┐ │
+       │                │  │ Attack  │ │
+       │                │  │ Item    │ │
+       │                │  │ Flee    │ │
+       │                │  └────┬────┘ │
+       │                │       │      │
+       │                │  ┌────▼────┐ │
+       │                │  │Monsters │ │
+       │                │  │ Attack  │ │
+       │                │  │ Back    │ │
+       │                │  └────┬────┘ │
+       │                │       │      │
+       │                │  ┌────▼────┐ │
+       │                │  │Player   │ │
+       │                │  │Dead? ───┼─┼──YES──► GAME OVER
+       │                │  └────┬────┘ │
+       │                │       │NO    │
+       │                │  ┌────▼────┐ │
+       │                │  │All Dead?│ │
+       │                │  └────┬────┘ │
+       │                └───────┼──────┘
+       │                        │YES/FLED
+       ▼                        │
+┌─────────────┐                 │
+│ Action Menu │◄────────────────┘
+│  1. Move    │
+│  2. Pick Up │
+│  3. Inventory│
+│  4. Status  │
+│  5. Look    │
+│  6. Quit────┼──► EXIT GAME
+└──────┬──────┘
+       │
+       │(Loop back to Enter Room)
+       └────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════
+
+KEY:
+  🎒 = Item
+  👾 = Monster
+  ▼ = Flow direction
+  ◄ = Goal/Win condition
+
+═══════════════════════════════════════════════════════════════════════
