@@ -1,35 +1,3 @@
-    class Item {
-
-      String name;
-      String description;
-      String effect;
-
-      public void use(Player player, Monster monster) {
-        // apply heal effect on player, variables for healing will be set later in this file
-        if (effect.equals("heal")) {
-            player.health += 15; // health effect
-            }
-            else {
-                System.out.println("item has no effect");
-            }
-            if (player.health > 100) {
-                player.health = 100; // cap health at 100 then stop allowing player to keep healing
-            }
-            if (player.health >= 86) {
-                System.out.println("healing wont be as effective"); // warn player about effectiveness of healing at high health
-            }
-        }
-      }
-         
-      if (effect.equals("strength")) {
-            player.strength += 10; // added strength variable, 10 base + 10 from item = 20 strength total\
-            System.out.println("Strength increased by 10, damage is now 20");
-            true = false; { // rids the possibility of infinite strength stacking (foolproof)
-            true until 
-      }
-    }
-
-
 class Item {
 
     String name;
@@ -41,6 +9,8 @@ class Item {
     // Track active temporary effects per Player
     private static final java.util.IdentityHashMap<Player, java.util.List<StatusEffect>> activeEffects =
             new java.util.IdentityHashMap<>();
+
+    Player player = new Player();
 
     public Item(String name, String description, String effect, int power, int duration) {
         this.name = name;
